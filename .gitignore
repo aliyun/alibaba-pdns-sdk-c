@@ -1,0 +1,456 @@
+# ============================================================
+#  HTTPDNS C SDK  —  .gitignore
+#  平台：macOS / Linux / Windows   构建：CMake   依赖：vcpkg / brew / apt
+# ============================================================
+
+
+# ------------------------------------------------------------
+#  1. 构建目录
+# ------------------------------------------------------------
+build/
+build-*/
+_build/
+out/
+bin/
+lib/
+obj/
+cmake-build-*/          # CLion
+cmake_build/
+xcode-build/
+msvc-build/
+
+
+# ------------------------------------------------------------
+#  2. CMake 生成物
+#     ⚠️ 不要写 *.cmake —— 会把你自己的 cmake/FindAPR.cmake 一起忽略
+# ------------------------------------------------------------
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+CTestTestfile.cmake
+CPackConfig.cmake
+CPackSourceConfig.cmake
+install_manifest.txt
+compile_commands.json
+CMakeUserPresets.json   # 个人预设，不提交（CMakePresets.json 要提交）
+_deps/                  # FetchContent / CPM 下载的依赖
+_CPack_Packages/
+Testing/
+
+
+# ------------------------------------------------------------
+#  3. 编译中间产物
+# ------------------------------------------------------------
+*.o
+*.obj
+*.lo
+*.slo
+*.la
+*.d                     # gcc -MMD 依赖文件
+*.gch
+*.pch
+*.ipch
+*.i
+*.ii
+*.su                    # -fstack-usage
+*.res
+*.rc.res
+.deps/
+.libs/
+
+
+# ------------------------------------------------------------
+#  4. 库与可执行文件产物
+#     ⚠️ 若将来需要提交预编译第三方库，见文件末尾「例外」一节
+# ------------------------------------------------------------
+*.a
+*.lib
+*.so
+*.so.*
+*.dylib
+*.dll
+*.exe
+*.out
+*.app/
+*.framework/
+*.bundle
+*.node
+
+
+# ------------------------------------------------------------
+#  5. 调试符号
+# ------------------------------------------------------------
+*.dSYM/                 # macOS
+*.pdb                   # Windows
+*.ilk
+*.exp
+*.idb
+*.debug                 # Linux 分离符号
+*.dbg
+*.map
+
+
+# ------------------------------------------------------------
+#  6. 崩溃 / 转储 / 分析产物
+# ------------------------------------------------------------
+core
+core.[0-9]*
+*.core
+*.dmp
+*.stackdump
+*.crash
+vgcore.*
+callgrind.out.*
+massif.out.*
+perf.data
+perf.data.old
+heaptrack.*
+
+
+# ------------------------------------------------------------
+#  7. 测试 / 覆盖率 / Sanitizer
+# ------------------------------------------------------------
+*.gcda
+*.gcno
+*.gcov
+*.lcov
+*.profraw
+*.profdata
+coverage/
+coverage.info
+lcov.info
+html-coverage/
+asan.log*
+tsan.log*
+ubsan.log*
+msan.log*
+# 模糊测试
+fuzz/corpus/
+crash-*
+leak-*
+timeout-*
+oom-*
+
+
+# ------------------------------------------------------------
+#  8. 依赖管理器
+# ------------------------------------------------------------
+vcpkg_installed/        # ⚠️ vcpkg.json / vcpkg-configuration.json 必须提交！
+.vcpkg-root
+conan/
+conanbuildinfo.*
+conaninfo.txt
+conan.lock
+graph_info.json
+CPM_modules/
+.cpmcache/
+# 若在仓库内从源码构建 curl / apr（不建议长期这样）
+deps/build/
+deps/install/
+deps/src/
+third_party/*/build/
+third_party/*/install/
+
+
+# ------------------------------------------------------------
+#  9. Autotools（若在树内构建 apr / apr-util / curl 会产生）
+# ------------------------------------------------------------
+configure
+config.log
+config.status
+config.guess
+config.sub
+config.h
+config.h.in
+Makefile
+Makefile.in
+!examples/Makefile      # 手写的示例 Makefile 要提交
+aclocal.m4
+autom4te.cache/
+libtool
+ltmain.sh
+depcomp
+install-sh
+missing
+compile
+stamp-h1
+*.pc                    # 从 .pc.in 生成的
+!*.pc.in
+
+
+# ------------------------------------------------------------
+#  10. 发布产物与打包
+# ------------------------------------------------------------
+release-package/
+release/
+dist/
+package/
+packages/
+artifacts/
+staging/
+*.tar
+*.tar.gz
+*.tgz
+*.tar.xz
+*.tar.bz2
+*.zip
+*.7z
+SHA256SUMS
+SHA256SUMS.asc
+*.sig
+*.asc
+# deb / rpm
+*.deb
+*.ddeb
+*.rpm
+*.srpm
+*.buildinfo
+*.changes
+debian/.debhelper/
+debian/files
+debian/tmp/
+debian/*.substvars
+debian/*.log
+debian/*.debhelper
+rpmbuild/
+# macOS 安装包
+*.pkg
+*.dmg
+
+
+# ------------------------------------------------------------
+#  11. 生成的源文件 / 头文件
+#      按你的实际生成物调整
+# ------------------------------------------------------------
+**/hdns_build_info.h    # CI 生成：内嵌依赖版本、ABI 常量
+**/hdns_version.h       # 若由 CMake configure_file 生成
+!**/hdns_version.h.in
+*.generated.c
+*.generated.h
+
+
+# ------------------------------------------------------------
+#  12. 文档生成物
+# ------------------------------------------------------------
+docs/html/
+docs/latex/
+docs/xml/
+docs/man/
+doxygen_warnings.log
+Doxyfile.bak
+*.pdf
+!docs/**/*.pdf          # 手写的设计文档 PDF 要提交
+
+
+# ------------------------------------------------------------
+#  13. 🔴 敏感文件（闭源 SDK 必加，绝不能泄露）
+# ------------------------------------------------------------
+# 密钥与证书
+*.pem
+*.key
+*.crt
+*.cer
+*.der
+*.p12
+*.pfx
+*.jks
+*.keystore
+id_rsa*
+id_ed25519*
+*.gpg
+secring.*
+# 目录
+secrets/
+signing/
+certs/
+private/
+license-keys/
+# 配置
+.env
+.env.*
+!.env.example
+*.secret
+*.credentials
+credentials.json
+# macOS 签名 / 公证
+*.provisionprofile
+notarize-credentials*
+# 测试用的真实账号
+tests/**/real_account*
+tests/**/*_secret*
+
+
+# ------------------------------------------------------------
+#  14. 日志与临时文件
+# ------------------------------------------------------------
+*.log
+!docs/**/*.log          # 若有需归档的示例日志
+logs/
+tmp/
+temp/
+.cache/
+*.tmp
+*.temp
+*.bak
+*.orig                  # patch 冲突残留
+*.rej
+*.swp
+*.swo
+*.swn
+*~
+\#*\#
+.\#*
+
+
+# ------------------------------------------------------------
+#  15. IDE / 编辑器
+# ------------------------------------------------------------
+# Visual Studio
+.vs/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.suo
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.opendb
+*.aps
+*.ncb
+enc_temp_folder/
+ipch/
+
+# VS Code（如需团队共享配置，取消下面 ! 行的注释）
+.vscode/
+# !.vscode/settings.json
+# !.vscode/launch.json
+# !.vscode/tasks.json
+# !.vscode/extensions.json
+# !.vscode/c_cpp_properties.json
+
+# CLion / JetBrains
+.idea/
+*.iml
+*.iws
+
+# Xcode
+*.xcodeproj/
+*.xcworkspace/
+xcuserdata/
+DerivedData/
+*.xcuserstate
+*.xcscmblueprint
+
+# Qt Creator
+CMakeLists.txt.user
+CMakeLists.txt.user.*
+*.pro.user
+*.pro.user.*
+*.autosave
+*.qmlproject.user
+
+# Eclipse CDT
+.cproject
+.project
+.settings/
+.autotools
+
+# LSP / 索引
+.clangd/
+.ccls-cache/
+.cquery_cached_index/
+tags
+TAGS
+cscope.*
+GTAGS
+GRTAGS
+GPATH
+
+# Sublime / Vim
+*.sublime-project
+*.sublime-workspace
+Session.vim
+.netrwhist
+
+
+# ------------------------------------------------------------
+#  16. 操作系统
+# ------------------------------------------------------------
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.AppleDouble
+.LSOverride
+.DocumentRevisions-V100
+.fseventsd
+.TemporaryItems
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+Icon?
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+
+# ------------------------------------------------------------
+#  17. 脚本工具链（若有 Python 构建脚本）
+# ------------------------------------------------------------
+# 内部依赖构建脚本与清单（二进制交付用，不随源码库发布）
+scripts/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.tox/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+
+# ------------------------------------------------------------
+#  18. 本地个人覆盖（约定：以 .local 结尾的一律不提交）
+# ------------------------------------------------------------
+*.local
+local.cmake
+local.mk
+CMakeLists.local.txt
+Makefile.local
+
+
+# ============================================================
+#  例外：以下文件必须提交（! 规则必须放在对应忽略规则之后）
+# ============================================================
+!.gitignore
+!.gitattributes
+!.gitmodules
+!CMakePresets.json
+!vcpkg.json
+!vcpkg-configuration.json
+!**/CMakeLists.txt
+!cmake/**/*.cmake       # 你自己写的 FindAPR.cmake / hdnsConfig.cmake.in 等
+!**/*.cmake.in
+!.github/**
+!examples/**/Makefile
+
+# 若需提交预编译的第三方库或测试固件，取消注释并按实际路径调整：
+# !third_party/prebuilt/**/*.a
+# !third_party/prebuilt/**/*.lib
+# !tests/fixtures/**/*.bin
